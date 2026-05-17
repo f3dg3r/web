@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новая заявка - Портал услуг</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Новая заявка</h2>
+    <form id="createForm">
+        <select name="service_name" required>
+            <option value="">Выберите услугу</option>
+            <option>Услуга 1</option>
+            <option>Услуга 2</option>
+            <option>Услуга 3</option>
+        </select>
+        <input type="text" name="extra_option" placeholder="Дополнительная опция (например, дата, адрес)" required>
+        <div id="message"></div>
+        <button type="submit">Отправить</button>
+    </form>
+    <a href="/home">Назад</a>
+</div>
+<script>
+    const form = document.getElementById('createForm');
+    const msg = document.getElementById('message');
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const data = {
+            service_name: form.service_name.value,
+            extra_option: form.extra_option.value
+        };
+        msg.innerText = 'Отправка...';
+        msg.style.color = '#2563eb';
+        const res = await fetch('/api/requests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.success) {
+            msg.style.color = 'green';
+            msg.innerText = 'Заявка создана! Перенаправление...';
+            setTimeout(() => window.location.href = '/my-requests', 1000);
+        } else {
+            msg.style.color = 'red';
+            msg.innerText = 'Ошибка: ' + (result.error || 'Неизвестная ошибка');
+        }
+    };
+</script>
+</body>
+</html>

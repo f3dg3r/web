@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Service Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2><i class="fas fa-user-plus"></i> Register</h2>
+    <form id="registerForm">
+        <input type="text" name="login" placeholder="Login (latin+digits, >=6)" required>
+        <input type="password" name="password" placeholder="Password (>=8 chars)" required>
+        <input type="text" name="full_name" placeholder="Full name" required>
+        <input type="text" name="phone" placeholder="Phone (any format)" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <div id="error" class="error"></div>
+        <button type="submit"><i class="fas fa-check"></i> Register</button>
+    </form>
+    <p>Already have account? <a href="/login">Login</a></p>
+</div>
+<script>
+    document.getElementById('registerForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const data = {
+            login: e.target.login.value,
+            password: e.target.password.value,
+            full_name: e.target.full_name.value,
+            phone: e.target.phone.value,
+            email: e.target.email.value
+        };
+        const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.success) {
+            window.location.href = '/home';
+        } else {
+            document.getElementById('error').innerText = result.error;
+        }
+    };
+</script>
+</body>
+</html>
